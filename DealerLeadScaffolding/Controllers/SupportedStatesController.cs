@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DealerLead;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DealerLead.Web.Controllers
 {
+    [Authorize]
     public class SupportedStatesController : Controller
     {
         private readonly DealerLeadDbContext _context;

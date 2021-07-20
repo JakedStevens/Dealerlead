@@ -22,6 +22,7 @@ namespace DealerLead.Web.Controllers
 			_context = context;
 		}
 
+		[AllowAnonymous]
 		private Guid GetOid()
 		{
 			var user = this.User;
@@ -55,24 +56,27 @@ namespace DealerLead.Web.Controllers
 			}
 			else
 			{
-				return await Register(oid);
+				//if (oid == Guid.Empty)
+				//{
+				//	return View(false);
+				//}
+				//else
+				//{
+				//	return await Register(oid);
+				//}
+				return View(false);
+
 			}
 		}
 
+		[AllowAnonymous]
 		public async Task<IActionResult> Register(Guid oid)
 		{
 			var newUser = new DealerLeadUser() { AzureADId = oid };
 			_context.Add(newUser);
 			await _context.SaveChangesAsync();
-			return View(true);
+			return View("Index", true);
 		}
-
-		//[Authorize]
-		//public IActionResult Privacy()
-		//{
-		//	string oid = GetOid();
-		//	return View();
-		//}
 
 		[AllowAnonymous]
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
