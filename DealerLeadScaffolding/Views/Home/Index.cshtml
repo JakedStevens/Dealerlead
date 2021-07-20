@@ -1,18 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    @model bool;
 }
 
 <div class="text-center">
     
     @if (User.Identity.IsAuthenticated)
     {
-    }
-    else
-    {
-        <h1 class="display-4">Welcome</h1>
-        <p class="navbar-text text-dark">Sign in to access Dealerlead</p>
-    }
-
         <div class="container">
             <div class="row m-3">
                 <div class="col">
@@ -24,19 +18,8 @@
                     <p class="text-dark">Dealerlead is the <em>#1 lead tracking app</em> for car dealerships!</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <p class="text-dark">You don't have an account. Please register.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <a class="btn btn-success w-25" asp-controller="Home" asp-action="Register">Register</a>
-                </div>
-            </div>
-
-
-
+            @if(@Model == true)
+            {
             <div class="row mt-2">
                 <div class="col">
                     <a class="btn btn-dark w-25" asp-controller="SupportedStates" asp-action="Index">Supported States</a>
@@ -52,6 +35,36 @@
                     <a class="btn btn-dark w-25" asp-controller="SupportedModels" asp-action="Index">Supported Models</a>
                 </div>
             </div>
-        </div>
+            }
+            else
+            {
+            <div class="row">
+                <div class="col">
+                    <p class="text-dark">You don't have an account. Please register.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-success w-25" asp-controller="Home" asp-action="Register">Register</a>
+                </div>
+            </div>
+            }
 
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row m-3">
+                <div class="col">
+                    <h1 class="text-dark">Welcome To Dealerlead!</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="text-dark">Sign in to access Dealerlead.</p>
+                </div>
+            </div>
+        </div>
+    }
 </div>

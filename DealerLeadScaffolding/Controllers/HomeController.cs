@@ -1,6 +1,7 @@
 ﻿using DealerLead.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,15 @@ namespace DealerLead.Web.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly DealerLeadDbContext _context;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, DealerLeadDbContext context)
 		{
 			_logger = logger;
+			_context = context;
 		}
 
-		private string GetOid()
+		private Guid GetOid()
 		{
 			var user = this.User;
 
@@ -27,14 +30,41 @@ namespace DealerLead.Web.Controllers
 			var oidClaim = claimsList.FirstOrDefault(claim =>
 				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
 			);
-			var oidValue = oidClaim.Value;
-			return oidValue;
+			if (oidClaim != null)
+			{
+				var oidValue = oidClaim.Value;
+				return Guid.Parse(oidValue);
+			}
+			else
+			{
+				return Guid.Empty;
+			}
+
 		}
 
 		[AllowAnonymous]
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			return View();
+			Guid oid = GetOid();
+			List<DealerLeadUser> userList = await _context.DealerLeadUser.ToListAsync();
+			bool userExists = userList.Any(user => user.AzureADId == oid);
+
+			if (userExists)
+			{
+				return View(true);
+			}
+			else
+			{
+				return await Register(oid);
+			}
+		}
+
+		public async Task<IActionResult> Register(Guid oid)
+		{
+			var newUser = new DealerLeadUser() { AzureADId = oid };
+			_context.Add(newUser);
+			await _context.SaveChangesAsync();
+			return View(true);
 		}
 
 		//[Authorize]

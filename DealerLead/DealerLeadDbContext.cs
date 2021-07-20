@@ -11,5 +11,6 @@ namespace DealerLead
 		public DbSet<SupportedState> SupportedState { get; set; }
 		public DbSet<SupportedMake> SupportedMake { get; set; }
 		public DbSet<SupportedModel> SupportedModel { get; set; }
+		public DbSet<DealerLeadUser> DealerLeadUser { get; set; }
 	}
 }
