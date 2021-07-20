@@ -29,12 +29,12 @@ namespace DealerLead.Web.Controllers
         // GET: SupportedMakes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+			if (id == null)
+			{
+				return NotFound();
+			}
 
-            var supportedMake = await _context.SupportedMake
+			var supportedMake = await _context.SupportedMake
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (supportedMake == null)
             {
