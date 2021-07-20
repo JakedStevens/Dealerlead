@@ -70,11 +70,9 @@ namespace DealerLead.Web
 		public async void GetUserOid(TokenValidatedContext context)
 		{
 			var claimsList = context.Principal.Claims.ToList();
-
 			var oidClaim = claimsList.FirstOrDefault(claim =>
 				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
 			);
-
 			Guid userGuid = Guid.Parse(oidClaim.Value);
 			List<DealerLeadUser> userList = await _dbContext.DealerLeadUser.ToListAsync();
 			bool userExists = userList.Any(user => user.AzureADId == userGuid);
@@ -82,6 +80,18 @@ namespace DealerLead.Web
 			{
 				Register(userGuid);
 			}
+
+			// Eric's way
+			//Guid? azureOIDToken = IdentityHelper.GetAzureOIDToken(context.Principal);
+			//var user = _dbContext.DealerLeadUser.FirstOrDefault(x => x.AzureADId == azureOIDToken);
+
+			//if (user == null)
+			//{
+			//	user = new DealerLeadUser { AzureADId = azureOIDToken.Value };
+			//	_dbContext.Add(user);
+			//	_dbContext.SaveChanges();
+			//}
+			//await Task.CompletedTask.ConfigureAwait(false);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
