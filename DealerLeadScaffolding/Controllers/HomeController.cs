@@ -56,22 +56,14 @@ namespace DealerLead.Web.Controllers
 			}
 			else
 			{
-				//if (oid == Guid.Empty)
-				//{
-				//	return View(false);
-				//}
-				//else
-				//{
-				//	return await Register(oid);
-				//}
 				return View(false);
-
 			}
 		}
 
 		[AllowAnonymous]
-		public async Task<IActionResult> Register(Guid oid)
+		public async Task<IActionResult> Register()
 		{
+			Guid oid = GetOid();
 			var newUser = new DealerLeadUser() { AzureADId = oid };
 			_context.Add(newUser);
 			await _context.SaveChangesAsync();
