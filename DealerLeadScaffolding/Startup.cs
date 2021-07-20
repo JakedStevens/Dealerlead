@@ -1,3 +1,4 @@
+using DealerLead.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +21,8 @@ namespace DealerLead.Web
 {
 	public class Startup
 	{
+		static readonly DealerLeadDbContext _dbContext = new();
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
@@ -30,7 +34,12 @@ namespace DealerLead.Web
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-				.AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
+				.AddMicrosoftIdentityWebApp(options =>
+				{
+					Configuration.Bind("AzureAD", options);
+					options.Events ??= new OpenIdConnectEvents();
+					options.Events.OnTokenValidated += OnTokenValidatedFunc;
+				});
 
 			services.AddControllersWithViews(options =>
 			{
@@ -42,6 +51,37 @@ namespace DealerLead.Web
 			services.AddRazorPages()
 				 .AddMicrosoftIdentityUI();
 			services.AddTransient<DealerLeadDbContext>();
+		}
+
+		private async Task OnTokenValidatedFunc(TokenValidatedContext context)
+		{
+			// Custom code here
+			GetUserOid(context);
+			await Task.CompletedTask.ConfigureAwait(false);
+		}
+
+		public async void Register(Guid userGuid)
+		{
+			var newUser = new DealerLeadUser() { AzureADId = userGuid };
+			_dbContext.Add(newUser);
+			await _dbContext.SaveChangesAsync();
+		}
+
+		public async void GetUserOid(TokenValidatedContext context)
+		{
+			var claimsList = context.Principal.Claims.ToList();
+
+			var oidClaim = claimsList.FirstOrDefault(claim =>
+				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
+			);
+
+			Guid userGuid = Guid.Parse(oidClaim.Value);
+			List<DealerLeadUser> userList = await _dbContext.DealerLeadUser.ToListAsync();
+			bool userExists = userList.Any(user => user.AzureADId == userGuid);
+			if (!userExists)
+			{
+				Register(userGuid);
+			}
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,3 +113,4 @@ namespace DealerLead.Web
 		}
 	}
 }
+

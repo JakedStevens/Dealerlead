@@ -18,8 +18,6 @@
                     <p class="text-dark">Dealerlead is the <em>#1 lead tracking app</em> for car dealerships!</p>
                 </div>
             </div>
-            @if(@Model == true)
-            {
             <div class="row mt-2">
                 <div class="col">
                     <a class="btn btn-dark w-25" asp-controller="SupportedStates" asp-action="Index">Supported States</a>
@@ -35,21 +33,6 @@
                     <a class="btn btn-dark w-25" asp-controller="SupportedModels" asp-action="Index">Supported Models</a>
                 </div>
             </div>
-            }
-            else
-            {
-            <div class="row">
-                <div class="col">
-                    <p class="text-dark">You don't have an account. Please register.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <a class="btn btn-success w-25" asp-controller="Home" asp-action="Register">Register</a>
-                </div>
-            </div>
-            }
-
         </div>
     }
     else

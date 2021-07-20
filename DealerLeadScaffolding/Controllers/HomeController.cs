@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DealerLead.Web.Controllers
@@ -14,60 +15,16 @@ namespace DealerLead.Web.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-		private readonly DealerLeadDbContext _context;
 
-		public HomeController(ILogger<HomeController> logger, DealerLeadDbContext context)
+		public HomeController(ILogger<HomeController> logger)
 		{
 			_logger = logger;
-			_context = context;
 		}
 
 		[AllowAnonymous]
-		private Guid GetOid()
+		public IActionResult Index()
 		{
-			var user = this.User;
-
-			var claimsList = user.Claims.ToList();
-			var oidClaim = claimsList.FirstOrDefault(claim =>
-				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
-			);
-			if (oidClaim != null)
-			{
-				var oidValue = oidClaim.Value;
-				return Guid.Parse(oidValue);
-			}
-			else
-			{
-				return Guid.Empty;
-			}
-
-		}
-
-		[AllowAnonymous]
-		public async Task<IActionResult> Index()
-		{
-			Guid oid = GetOid();
-			List<DealerLeadUser> userList = await _context.DealerLeadUser.ToListAsync();
-			bool userExists = userList.Any(user => user.AzureADId == oid);
-
-			if (userExists)
-			{
-				return View(true);
-			}
-			else
-			{
-				return View(false);
-			}
-		}
-
-		[AllowAnonymous]
-		public async Task<IActionResult> Register()
-		{
-			Guid oid = GetOid();
-			var newUser = new DealerLeadUser() { AzureADId = oid };
-			_context.Add(newUser);
-			await _context.SaveChangesAsync();
-			return View("Index", true);
+			return View();
 		}
 
 		[AllowAnonymous]
