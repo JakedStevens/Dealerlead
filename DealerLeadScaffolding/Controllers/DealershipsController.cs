@@ -35,7 +35,7 @@ namespace DealerLead.Web.Controllers
 			{
 				return NotFound();
 			}
-			
+
 			return View(dealership);
 		}
 
@@ -130,7 +130,6 @@ namespace DealerLead.Web.Controllers
 			return View(dealership);
 		}
 
-		// POST: SupportedMakes/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
@@ -152,9 +151,7 @@ namespace DealerLead.Web.Controllers
 				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
 			).Value);
 
-			var creatingUser = _context.DealerLeadUser.FirstOrDefault(x => x.AzureADId == userOid);
-
-			return creatingUser;
+			return _context.DealerLeadUser.FirstOrDefault(x => x.AzureADId == userOid);
 		}
 	}
 }
