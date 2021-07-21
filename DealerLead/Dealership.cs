@@ -37,5 +37,7 @@ namespace DealerLead
 		public DateTime? ModifyDate { get; set; }
 
 		public int CreatingUserId { get; set; }
+
+		//public List<Vehicle> Vehicles { get; set; }
 	}
 }

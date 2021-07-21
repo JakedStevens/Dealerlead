@@ -19,23 +19,25 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col">
-                    <a class="btn btn-dark w-25" asp-controller="SupportedStates" asp-action="Index">Supported States</a>
+                <div class="col-4">
+                    <a class="btn btn-dark home-btns" asp-controller="SupportedStates" asp-action="Index">Supported States</a>
+                </div>
+                <div class="col-4">
+                    <a class="btn btn-dark home-btns" asp-controller="SupportedMakes" asp-action="Index">Supported Makes</a>
+                </div>
+                <div class="col-4">
+                    <a class="btn btn-dark home-btns" asp-controller="SupportedModels" asp-action="Index">Supported Models</a>
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col">
-                    <a class="btn btn-dark w-25" asp-controller="SupportedMakes" asp-action="Index">Supported Makes</a>
+                <div class="col-4">
+                    <a class="btn btn-dark home-btns" asp-controller="Dealerships" asp-action="Index">Dealerships</a>
                 </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <a class="btn btn-dark w-25" asp-controller="SupportedModels" asp-action="Index">Supported Models</a>
+                <div class="col-4">
+                    <a class="btn btn-dark home-btns" asp-controller="Vehicles" asp-action="Index">Vehicles</a>
                 </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col">
-                    <a class="btn btn-dark w-25" asp-controller="Dealerships" asp-action="Index">Dealerships</a>
+                <div class="col-4">
+                   
                 </div>
             </div>
         </div>
@@ -56,3 +58,9 @@
         </div>
     }
 </div>
+
+<style>
+    .home-btns {
+        min-width: 215px;
+    }
+</style>
