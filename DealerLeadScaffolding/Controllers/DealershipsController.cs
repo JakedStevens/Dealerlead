@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace DealerLead.Web.Controllers
 
 		public IActionResult Create()
 		{
+			ViewData["States"] = new SelectList(_context.SupportedState, "Abbreviation", "Name");
 			return View();
 		}
 
@@ -47,6 +49,9 @@ namespace DealerLead.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("Id,Name,StreetAddress1,StreetAddress2,City,State,Zipcode,CreatingUserId")] Dealership dealership)
 		{
+			DealerLeadUser creatingUser = GetDealerLeadUser();
+			dealership.CreatingUserId = creatingUser.Id;
+
 			if (ModelState.IsValid)
 			{
 				_context.Add(dealership);
@@ -58,6 +63,7 @@ namespace DealerLead.Web.Controllers
 
 		public async Task<IActionResult> Edit(int? id)
 		{
+			ViewData["States"] = new SelectList(_context.SupportedState, "Abbreviation", "Name");
 			if (id == null)
 			{
 				return NotFound();
@@ -75,6 +81,9 @@ namespace DealerLead.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StreetAddress1,StreetAddress2,City,State,Zipcode,CreatingUserId")] Dealership dealership)
 		{
+			DealerLeadUser creatingUser = GetDealerLeadUser();
+			dealership.CreatingUserId = creatingUser.Id;
+
 			if (id != dealership.Id)
 			{
 				return NotFound();
@@ -135,6 +144,17 @@ namespace DealerLead.Web.Controllers
 		private bool DealershipExists(int id)
 		{
 			return _context.Dealership.Any(e => e.Id == id);
+		}
+
+		private DealerLeadUser GetDealerLeadUser()
+		{
+			var userOid = Guid.Parse(this.User.Claims.ToList().FirstOrDefault(claim =>
+				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
+			).Value);
+
+			var creatingUser = _context.DealerLeadUser.FirstOrDefault(x => x.AzureADId == userOid);
+
+			return creatingUser;
 		}
 	}
 }
