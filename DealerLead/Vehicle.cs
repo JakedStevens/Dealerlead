@@ -22,7 +22,7 @@ namespace DealerLead
 
 		public string Color { get; set; }
 
-		public string DealershipId { get; set; }
+		public int DealershipId { get; set; }
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime CreateDate { get; set; }
@@ -31,6 +31,8 @@ namespace DealerLead
 
 		public DateTime? SellDate { get; set; }
 
-		public SupportedModel SupportedModel {  get; set; }
+		public Dealership Dealership { get; set; }
+
+		public SupportedModel Model { get; set; }
 	}
 }

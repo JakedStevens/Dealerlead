@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DealerLead.Web.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,10 +12,12 @@ namespace DealerLead.Web.Controllers
 	public class DealershipsController : Controller
 	{
 		private readonly DealerLeadDbContext _context;
+		private readonly UserService _userService;
 
-		public DealershipsController(DealerLeadDbContext context)
+		public DealershipsController(DealerLeadDbContext context, UserService userService)
 		{
 			_context = context;
+			_userService = userService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -49,8 +52,8 @@ namespace DealerLead.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("Id,Name,StreetAddress1,StreetAddress2,City,State,Zipcode,CreatingUserId")] Dealership dealership)
 		{
-			DealerLeadUser creatingUser = GetDealerLeadUser();
-			dealership.CreatingUserId = creatingUser.Id;
+			DealerLeadUser user = _userService.GetDealerLeadUser(this.User);
+			dealership.CreatingUserId = user.Id;
 
 			if (ModelState.IsValid)
 			{
@@ -81,8 +84,8 @@ namespace DealerLead.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StreetAddress1,StreetAddress2,City,State,Zipcode,CreatingUserId")] Dealership dealership)
 		{
-			DealerLeadUser creatingUser = GetDealerLeadUser();
-			dealership.CreatingUserId = creatingUser.Id;
+			DealerLeadUser user = _userService.GetDealerLeadUser(this.User);
+			dealership.CreatingUserId = user.Id;
 
 			if (id != dealership.Id)
 			{
@@ -143,15 +146,6 @@ namespace DealerLead.Web.Controllers
 		private bool DealershipExists(int id)
 		{
 			return _context.Dealership.Any(e => e.Id == id);
-		}
-
-		private DealerLeadUser GetDealerLeadUser()
-		{
-			var userOid = Guid.Parse(this.User.Claims.ToList().FirstOrDefault(claim =>
-				claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier"
-			).Value);
-
-			return _context.DealerLeadUser.FirstOrDefault(x => x.AzureADId == userOid);
 		}
 	}
 }

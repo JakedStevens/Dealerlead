@@ -26,5 +26,7 @@ namespace DealerLead
 
 		public int MakeId {  get; set; }
 		public SupportedMake Make {  get; set; }
+
+		public List<Vehicle> Vehicles { get; set; }
 	}
 }

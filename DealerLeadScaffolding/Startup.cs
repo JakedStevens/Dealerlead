@@ -51,6 +51,7 @@ namespace DealerLead.Web
 			services.AddRazorPages()
 				 .AddMicrosoftIdentityUI();
 			services.AddTransient<DealerLeadDbContext>();
+			services.AddScoped<UserService>();
 		}
 
 		private async Task OnTokenValidatedFunc(TokenValidatedContext context)
