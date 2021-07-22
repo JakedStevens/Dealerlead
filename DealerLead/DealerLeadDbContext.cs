@@ -14,21 +14,25 @@ namespace DealerLead
 		public DbSet<DealerLeadUser> DealerLeadUser { get; set; }
 		public DbSet<Dealership> Dealership { get; set; }
 		public DbSet<Vehicle> Vehicle { get; set; }
+        public DbSet<Lead> Lead { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SupportedModel>()
-                .HasOne(p => p.Make)
-                .WithMany(b => b.Models)
-                .HasForeignKey(p => p.MakeId);
+                .HasOne(x => x.Make)
+                .WithMany(i => i.Models)
+                .HasForeignKey(j => j.MakeId);
             modelBuilder.Entity<Vehicle>()
-                .HasOne(v => v.Dealership)
-                .WithMany(d => d.Vehicles)
-                .HasForeignKey(v => v.DealershipId);
+                .HasOne(x => x.Dealership)
+                .WithMany(i => i.Vehicles)
+                .HasForeignKey(j => j.DealershipId);
             modelBuilder.Entity<Vehicle>()
-                .HasOne(v => v.Model)
-                .WithMany(m => m.Vehicles)
-                .HasForeignKey(v => v.ModelId);
+                .HasOne(x => x.Model)
+                .WithMany(i => i.Vehicles)
+                .HasForeignKey(j => j.ModelId);
+            modelBuilder.Entity<Lead>()
+                .HasMany(x => x.Vehicles)
+                .WithMany(i => i.Leads);
         }
     }
 }
