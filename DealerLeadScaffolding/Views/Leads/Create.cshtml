@@ -33,9 +33,8 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ModifyDate" class="control-label"></label>
-                <input asp-for="ModifyDate" class="form-control" />
-                <span asp-validation-for="ModifyDate" class="text-danger"></span>
+                <label asp-for="Vehicles" class="control-label"></label>
+                <select asp-for="Vehicles" class ="form-control" asp-items="ViewBag.Vehicles"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

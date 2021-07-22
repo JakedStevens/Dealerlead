@@ -6,21 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DealerLead;
+using DealerLead.Web.Models;
 
 namespace DealerLead.Web.Controllers
 {
     public class LeadsController : Controller
     {
         private readonly DealerLeadDbContext _context;
+        private readonly UserService _userService;
 
-        public LeadsController(DealerLeadDbContext context)
+        public LeadsController(DealerLeadDbContext context, UserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         // GET: Leads
         public async Task<IActionResult> Index()
         {
+            var leads = _context.Lead.Include(x => x.Vehicles);
+            DealerLeadUser user = _userService.GetDealerLeadUser(this.User);
             return View(await _context.Lead.ToListAsync());
         }
 
@@ -45,6 +50,8 @@ namespace DealerLead.Web.Controllers
         // GET: Leads/Create
         public IActionResult Create()
         {
+            //var thing = _context.Vehicle.Include(x => x.Model);
+            ViewData["Vehicles"] = new SelectList(_context.Vehicle, "Id", "StockNumber");
             return View();
         }
 
@@ -53,7 +60,7 @@ namespace DealerLead.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,EmailAddress,PhoneNumber,CreateDate,ModifyDate")] Lead lead)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,EmailAddress,PhoneNumber")] Lead lead)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +92,7 @@ namespace DealerLead.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,EmailAddress,PhoneNumber,CreateDate,ModifyDate")] Lead lead)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,EmailAddress,PhoneNumber")] Lead lead)
         {
             if (id != lead.Id)
             {

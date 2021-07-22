@@ -24,9 +24,9 @@ namespace DealerLead.Web
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            var dealerLeadDbContext = _context.Vehicle.Include(v => v.Dealership).Include(v => v.Model);
+            var vehicles = _context.Vehicle.Include(v => v.Dealership).Include(v => v.Model);
             DealerLeadUser user = _userService.GetDealerLeadUser(this.User);
-            return View(await dealerLeadDbContext.Where(v => v.Dealership.CreatingUserId == user.Id).ToListAsync());
+            return View(await vehicles.Where(v => v.Dealership.CreatingUserId == user.Id).ToListAsync());
         }
 
         // GET: Vehicles/Details/5

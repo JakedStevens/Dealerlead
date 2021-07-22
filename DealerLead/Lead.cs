@@ -26,9 +26,11 @@ namespace DealerLead
 		[Display(Name = "Phone")]
 		public string PhoneNumber { get; set; }
 
+		[ScaffoldColumn(false)]
 		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 		public DateTime CreateDate { get; set; }
 
+		[ScaffoldColumn(false)]
 		public DateTime? ModifyDate { get; set; }
 
 		public List<Vehicle> Vehicles { get; set; }
